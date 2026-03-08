@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Withdraw Manager</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #334155;
+      text-align: center;
+    }
+
+    th {
+      background: #020617;
+    }
+
+    button {
+      padding: 6px 10px;
+      margin: 2px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .approve { background: green; color: white; }
+    .reject { background: red; color: white; }
+    .paid { background: orange; color: white; }
+
+  </style>
+</head>
+
+<body>
+
+<h1>💰 Admin Withdraw Manager</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Amount</th>
+      <th>Method</th>
+      <th>Account</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody id="withdrawTable"></tbody>
+</table>
+
+<script>
+
+const API = "http://localhost:4242/api/admin/withdraw";
+
+
+async function loadWithdraws() {
+
+  const res = await fetch(API);
+  const data = await res.json();
+
+  const table = document.getElementById("withdrawTable");
+  table.innerHTML = "";
+
+  data.forEach(w => {
+
+    table.innerHTML += `
+      <tr>
+        <td>${w.user?.name || ""}</td>
+        <td>${w.amount}</td>
+        <td>${w.method}</td>
+        <td>${w.account}</td>
+        <td>${w.status}</td>
+        <td>
+          <button class="approve" onclick="approve('${w._id}')">Approve</button>
+          <button class="reject" onclick="reject('${w._id}')">Reject</button>
+          <button class="paid" onclick="paid('${w._id}')">Paid</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+
+async function approve(id) {
+  await fetch(`${API}/approve/${id}`, { method: "POST" });
+  loadWithdraws();
+}
+
+
+async function reject(id) {
+
+  const reason = prompt("Reason for rejection?");
+
+  await fetch(`${API}/reject/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reason })
+  });
+
+  loadWithdraws();
+}
+
+
+async function paid(id) {
+  await fetch(`${API}/paid/${id}`, { method: "POST" });
+  loadWithdraws();
+}
+
+
+loadWithdraws();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deposit - IyomeAfrica</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f5f6fa;
+      margin:0;
+      padding:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .card{
+      width: 420px;
+      background:#fff;
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    h2{ margin:0 0 10px 0; }
+    .muted{ color:#666; font-size:14px; margin-bottom:15px; }
+    input, select, button{
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border-radius:10px;
+      border:1px solid #ddd;
+      outline:none;
+      font-size:15px;
+      box-sizing:border-box;
+    }
+    button{
+      border:none;
+      cursor:pointer;
+      background:#2563eb;
+      color:#fff;
+      font-weight:600;
+    }
+    button:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+    .secondary{
+      background:#0ea5e9;
+    }
+    .info{
+      background:#f1f5f9;
+      padding:12px;
+      border-radius:10px;
+      margin-top:10px;
+      font-size:14px;
+      display:none;
+    }
+
+    #toast{
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#222;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:8px;
+      font-size:14px;
+      opacity:0;
+      pointer-events:none;
+      transition:all .3s ease;
+      z-index:9999;
+    }
+    #toast.show{ opacity:1; bottom:30px; }
+    #toast.success{ background:#0a8f4d; }
+    #toast.error{ background:#c0392b; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Deposit</h2>
+    <div class="muted">Choose how you want to deposit into IyomeAfrica / Obasecash.</div>
+
+    <!-- MTN MoMo (Display only) -->
+    <h3 style="margin:12px 0 6px 0;">Deposit via MTN MoMo</h3>
+    <input id="momoAmount" type="number" placeholder="Enter amount (XAF)" />
+    <input id="momoPhone" type="tel" placeholder="MTN MoMo number (6XXXXXXXX)" />
+    <input id="reference" type="text" placeholder="Your email or user ID" />
+
+    <button class="secondary" id="payMomoBtn" type="button">Show MTN MoMo Instructions</button>
+
+    <div class="info" id="momoInfo">
+      <p><strong>Merchant Name:</strong> ANDRE MBOM YUMSIE</p>
+      <p><strong>Merchant ID:</strong> 814161</p>
+      <p><strong>Reference:</strong> <span id="refText"></span></p>
+      <p style="margin:0;color:#555;">
+        Use your MoMo app → Pay Merchant → enter Merchant ID + Amount + Reference above.
+      </p>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #eee;margin:16px 0;"/>
+
+    <!-- Stripe Card -->
+    <h3 style="margin:0 0 6px 0;">Deposit with Card (Stripe)</h3>
+    <input id="usdAmount" type="number" placeholder="Enter amount (USD) e.g. 10" />
+    <button id="payCardBtn" type="button">Pay with Card</button>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    function showToast(msg, type="success"){
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "";
+      t.classList.add("show", type);
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    // Show MoMo instructions
+    document.getElementById("payMomoBtn").addEventListener("click", () => {
+      const ref = document.getElementById("reference").value.trim();
+      if(!ref){
+        showToast("Please enter your email or user ID as reference.", "error");
+        return;
+      }
+      document.getElementById("refText").textContent = ref;
+      document.getElementById("momoInfo").style.display = "block";
+      showToast("MoMo instructions shown.", "success");
+    });
+
+    // Stripe card deposit
+    document.getElementById("payCardBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("payCardBtn");
+      const amountUsd = Number(document.getElementById("usdAmount").value);
+
+      if(!amountUsd || amountUsd <= 0){
+        showToast("Enter a valid USD amount.", "error");
+        return;
+      }
+
+      // Convert USD to cents
+      const amountCents = Math.round(amountUsd * 100);
+
+      btn.disabled = true;
+      btn.textContent = "Redirecting...";
+
+      try{
+        const res = await fetch("/api/stripe/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: amountCents })
+        });
+
+        const data = await res.json();
+
+        if(data.url){
+          window.location.href = data.url;
+        }else{
+          showToast(data.error || "Payment failed", "error");
+          btn.disabled = false;
+          btn.textContent = "Pay with Card";
+        }
+      }catch(e){
+        showToast("Server error. Check backend logs.", "error");
+        btn.disabled = false;
+        btn.textContent = "Pay with Card";
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Iyome Admin – User Detail</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="nav-bar">
+    <div class="nav-brand">Iyome Admin</div>
+    <div class="nav-links">
+        <a href="admin-dashboard.html">Overview</a>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<div class="page-wrapper">
+
+    <div class="admin-user-card">
+
+        <h2 class="page-title">Investor Detail</h2>
+
+        <p><strong>Name:</strong> <span id="userName">loading...</span></p>
+        <p><strong>Email:</strong> <span id="userEmail">loading...</span></p>
+        <p><strong>Wallet Balance:</strong> $<span id="walletBalance">0</span></p>
+        <p><strong>Account Status:</strong> 
+         <span id="userActiveLabel">loading...</span>
+         <button id="toggleStatusBtn" class="secondary-btn">Toggle</button>
+      </p>
+
+        <p><strong>Status:</strong> <span id="userStatus">active</span></p>
+
+        <h3 class="section-title">Wallet Controls</h3>
+           
+           <h3 class="section-title">Reset Password</h3>
+
+<div class="btn-row">
+  <button id="resetPassBtn" class="primary-btn">Reset User Password</button>
+</div>
+
+
+        <label>Amount</label>
+        <input id="walletAmount" type="number" placeholder="Enter amount">
+
+        <label>Description / Note</label>
+        <input id="walletNote" type="text" placeholder="Reason for update">
+
+        <div class="btn-row">
+            <button id="creditBtn" class="primary-btn">Credit Wallet</button>
+            <button id="debitBtn" class="danger-btn">Debit Wallet</button>
+            <button id="profitBtn" class="secondary-btn">Add Profit</button>
+        </div>
+
+        <h3 class="section-title">User Investments</h3>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Return</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="investmentsTable"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<script src="js/adminAuthFetch.js"></script>
+<script src="js/admin-user.js"></script>
+
+
+<script>
+const token = localStorage.getItem("adminToken");
+if (!token) {
+  alert("Not authorized");
+  window.location.href = "admin-login.html";
+}
+
+const params = new URLSearchParams(window.location.search);
+const userId = params.get("id");
+
+if (!userId) {
+  alert("User ID missing");
+}
+
+fetch(`http://localhost:10000/api/admin/users/${userId}`, {
+  headers: {
+    "Authorization": "Bearer " + token
+  }
+})
+.then(res => res.json())
+.then(user => {
+  document.getElementById("userName").innerText = user.name || "N/A";
+  document.getElementById("userEmail").innerText = user.email;
+  document.getElementById("walletBalance").innerText = "$" + (user.wallet || 0);
+  document.getElementById("accountStatus").innerText = user.status;
+})
+.catch(err => {
+  console.error(err);
+  alert("Failed to load user");
+});
+</script>
+
+
+</body>
+</html>

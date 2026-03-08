@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iyome Admin – All Transactions</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="nav-brand">Iyome Admin</div>
+  <div class="nav-links">
+    <a href="admin-dashboard.html">Overview</a>
+    <a href="admin-deposits.html">Deposits</a>
+    <a href="admin-withdrawals.html">Withdrawals</a>
+    <a href="admin-transactions.html" class="active">Transactions</a>
+    <a href="index.html">Logout</a>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <div class="admin-container">
+    <h2 class="page-title">All Transactions</h2>
+
+    <div class="filters-row">
+      <select id="txTypeFilter" class="input">
+        <option value="all">All types</option>
+        <option value="deposit">Deposits</option>
+        <option value="withdrawal">Withdrawals</option>
+        <option value="investment">Investments</option>
+        <option value="profit">Profits</option>
+        <option value="credit">Admin credit</option>
+        <option value="debit">Admin debit</option>
+      </select>
+
+      <input type="date" id="fromDate" class="input" />
+      <input type="date" id="toDate" class="input" />
+
+      <button class="primary-btn" id="filterBtn">Apply</button>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="txTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem("adminToken");
+if (!token) window.location.href = "admin-login.html";
+
+fetch("/api/admin/transactions", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(txs => {
+  const table = document.getElementById("transactionsTable");
+  table.innerHTML = "";
+
+  txs.forEach(t => {
+    table.innerHTML += `
+      <tr>
+        <td>${t.user.email}</td>
+        <td>${t.type}</td>
+        <td>${t.amount}</td>
+        <td>${t.status}</td>
+        <td>
+          ${t.status === "pending"
+            ? `<button onclick="approve('${t._id}')">Approve</button>`
+            : "Done"}
+        </td>
+      </tr>
+    `;
+  });
+});
+
+function approve(id) {
+  fetch("/api/admin/transactions/" + id + "/approve", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token }
+  }).then(() => location.reload());
+}
+</script>
+
+
+<script src="js/adminAuthFetch.js"></script>
+<script src="js/admin-transactions.js"></script>
+
+</body>
+</html>

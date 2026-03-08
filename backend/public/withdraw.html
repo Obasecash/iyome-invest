@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Withdraw</title>
+  <style>
+    body { font-family: Arial; background:#0f172a; color:white; }
+    .box { width:400px; margin:auto; margin-top:50px; }
+    input, select, button {
+      width:100%; padding:10px; margin:10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Request Withdraw</h2>
+
+  <input type="number" id="amount" placeholder="Amount">
+
+  <select id="method">
+    <option value="momo">MTN MoMo</option>
+    <option value="orange">Orange Money</option>
+    <option value="bank">Bank</option>
+    <option value="paypal">PayPal</option>
+  </select>
+
+  <input type="text" id="account" placeholder="Phone / Account">
+
+  <button onclick="withdraw()">Submit</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+async function withdraw() {
+  const amount = document.getElementById("amount").value;
+  const method = document.getElementById("method").value;
+  const account = document.getElementById("account").value;
+
+  const res = await fetch("/api/withdraw", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ amount, method, account })
+  });
+
+  const data = await res.json();
+  document.getElementById("msg").innerText = data.message;
+}
+</script>
+
+</body>
+</html>

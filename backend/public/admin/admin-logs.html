@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Logs – Iyome Invest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="nav-bar">
+    <div class="nav-links">
+      <a href="admin-dashboard.html">Overview</a>
+      <a href="admin-transactions.html">Transactions</a>
+      <a href="admin-analytics.html">Analytics</a>
+      <a href="admin-logs.html" class="active">Logs</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+    <div class="admin-container">
+      <h2 class="page-title">Admin Activity Logs</h2>
+
+      <div id="logsList" class="card" style="padding:20px; max-height: 500px; overflow-y:auto;">
+        Loading logs...
+      </div>
+    </div>
+  </div>
+     
+    <script src="js/adminAuthFetch.js"></script>
+    <script src="js/admin-logs.js"></script>
+
+
+</body>
+</html>

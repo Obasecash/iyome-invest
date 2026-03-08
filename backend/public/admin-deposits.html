@@ -1,0 +1,130 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Deposits</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background:#0b0f1a;
+      color:white;
+      padding:20px;
+    }
+
+    h1 {
+      color:gold;
+    }
+
+    table {
+      width:100%;
+      border-collapse: collapse;
+      background:#111827;
+    }
+
+    th, td {
+      padding:12px;
+      border-bottom:1px solid #333;
+      text-align:left;
+    }
+
+    th {
+      color:gold;
+    }
+
+    button {
+      padding:6px 12px;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
+    }
+
+    .approve {
+      background:green;
+      color:white;
+    }
+
+    .reject {
+      background:red;
+      color:white;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>💰 Deposit Management</h1>
+
+<table id="depositTable">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Email</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API = "http://localhost:4242/api/admin";
+
+async function loadDeposits() {
+  const res = await fetch(API + "/deposits");
+  const data = await res.json();
+
+  const tbody = document.querySelector("tbody");
+  tbody.innerHTML = "";
+
+  data.deposits.forEach(d => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${d.user?.name || ""}</td>
+      <td>${d.user?.email || ""}</td>
+      <td>$${d.amount}</td>
+      <td>${d.status}</td>
+      <td>
+        <button class="approve" onclick="approve('${d._id}')">Approve</button>
+        <button class="reject" onclick="reject('${d._id}')">Reject</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+async function approve(id) {
+  await fetch(API + "/deposits/approve/" + id, {
+    method: "PUT"
+  });
+
+  alert("Approved ✅");
+  loadDeposits();
+}
+
+async function reject(id) {
+  await fetch(API + "/deposits/reject/" + id, {
+    method: "PUT"
+  });
+
+  alert("Rejected ❌");
+  loadDeposits();
+}
+
+loadDeposits();
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

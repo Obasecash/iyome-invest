@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - MTN MoMo Withdrawals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background: #1f2937;
+      color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    button {
+      padding: 6px 12px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #15803d;
+    }
+
+    .logout {
+      background: #dc2626;
+      margin-bottom: 15px;
+    }
+
+    .logout:hover {
+      background: #b91c1c;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="logout" onclick="logout()">Logout</button>
+
+  <h2>Pending MTN MoMo Withdrawals</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User Email</th>
+        <th>Phone</th>
+        <th>Amount (XAF)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="list">
+      <!-- Data will load here -->
+    </tbody>
+  </table>
+
+  <p id="status"></p>
+
+  <script>
+    const token = localStorage.getItem("adminToken");
+
+    // 🚫 If admin not logged in
+    if (!token) {
+      alert("Admin not logged in");
+      window.location.href = "/admin-login.html";
+    }
+
+    async function loadWithdrawals() {
+      try {
+        const res = await fetch("/api/admin/withdraw/pending", {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+
+        const data = await res.json();
+        const list = document.getElementById("list");
+        list.innerHTML = "";
+
+        if (!data.length) {
+          list.innerHTML = `
+            <tr>
+              <td colspan="4">No pending withdrawals</td>
+            </tr>
+          `;
+          return;
+        }
+
+        data.forEach(tx => {
+          list.innerHTML += `
+            <tr>
+              <td>${tx.user?.email || "N/A"}</td>
+              <td>${tx.phone}</td>
+              <td>${tx.amount}</td>
+              <td>
+                <button onclick="approveWithdraw('${tx._id}')">Approve</button>
+              </td>
+            </tr>
+          `;
+        });
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("status").innerText =
+          "Failed to load withdrawals";
+      }
+    }
+
+    async function approveWithdraw(id) {
+      if (!confirm("Have you sent the MTN MoMo payment?")) return;
+
+      const res = await fetch("/api/admin/withdraw/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ transactionId: id })
+      });
+
+      const data = await res.json();
+      alert(data.message);
+      loadWithdrawals();
+    }
+
+    function logout() {
+      localStorage.removeItem("adminToken");
+      window.location.href = "/admin-login.html";
+    }
+
+    // 🔄 Load on page open
+    loadWithdrawals();
+  </script>
+
+</body>
+</html>

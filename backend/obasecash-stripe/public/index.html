@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay with Stripe</title>
+</head>
+<body>
+  
+ <h2>Iyome Invest Platform</h2>
+
+<label for="amount">Amount</label>
+
+<select id="amount">
+  <option value="" selected disabled>-- Select Amount --</option>
+  <option value="1000">$10</option>
+  <option value="5000">$50</option>
+  <option value="10000">$100</option>
+</select>
+  <b></b>
+
+  <button id="payBtn">Pay Now</button>
+
+
+<script>
+  document.getElementById("payBtn").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const amount = document.getElementById("amount").value;
+
+    if (!amount) {
+      alert("Please select an amount");
+      return;
+    }
+
+    try {
+    const res = await fetch("/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ amount })
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Payment failed");
+    }
+   } catch (err) {
+    console.error(err);
+    alert("Server error");
+   }
+  });
+</script>
+
+
+</body>
+</html>

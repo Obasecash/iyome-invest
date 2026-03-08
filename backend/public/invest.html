@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Invest | Iyome Invest</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="card">
+        <h2>Make an Investment</h2>
+
+        <input type="number" id="investAmount" placeholder="Amount to invest" />
+
+        <select id="investPlan">
+            <option value="Starter">Starter (5% weekly)</option>
+            <option value="Silver">Silver (10% weekly)</option>
+            <option value="Gold">Gold (15% weekly)</option>
+        </select>
+
+        <button id="investBtn" class="main-btn">Invest Now</button>
+
+        <p><a href="/investor-dashboard.html">⬅ Back to Dashboard</a></p>
+    </div>
+
+    <script src="/js/authFetch.js"></script>
+    <script src="/js/invest.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mock PayUnit Payment</title>
+    <style>
+        body { 
+            background: #111; 
+            color: #fff; 
+            font-family: Arial; 
+            text-align: center; 
+            padding-top: 80px;
+        }
+        .box {
+            width: 320px;
+            margin: auto;
+            padding: 20px;
+            background: #222;
+            border-radius: 8px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 17px;
+            background: orange;
+            border: none;
+            margin-top: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Mock PayUnit Payment</h2>
+    <p id="details"></p>
+
+    <button onclick="completePayment()">Complete Payment</button>
+</div>
+
+<script>
+    // Read URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get("amount");
+    const userId = urlParams.get("userId");
+
+    document.getElementById("details").innerHTML =
+        `You are paying <b>${amount} XAF</b>`;
+
+    // When user presses COMPLETE
+    function completePayment() {
+        window.location.href = `/api/payunit/mock/complete?amount=${amount}&userId=${userId}`;
+    }
+</script>
+
+</body>
+</html>

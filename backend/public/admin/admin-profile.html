@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Admin Profile</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="nav-bar">
+    <div class="nav-brand">Iyome Admin</div>
+    <div class="nav-links">
+        <a href="admin-dashboard.html">Overview</a>
+        <a href="admin-profile.html" class="active">Profile</a>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<div class="page-wrapper">
+  <div class="admin-container">
+    <h2 class="page-title">Change Admin Password</h2>
+
+    <input id="newPassInput" class="input" type="password" placeholder="New password" />
+    <button id="saveAdminPass" class="primary-btn">Save Password</button>
+  </div>
+</div>
+
+<script>
+document.getElementById("saveAdminPass").addEventListener("click", async () => {
+  const password = document.getElementById("newPassInput").value;
+
+  const res = await adminFetch("/admin/change-password", {
+      method: "POST",
+      body: JSON.stringify({ password })
+  });
+
+  alert(res.message);
+});
+</script>
+
+<script src="js/adminAuthFetch.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Investor Dashboard - Iyome Invest</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<div class="nav-bar">
+    <div class="nav-links">
+        <a href="investor-dashboard.html" class="active">Dashboard</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="deposit.html">Deposit Money</a>
+        <a href="withdraw.html">Withdraw Money</a>
+        <a href="invest.html">Invest</a>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<div class="page-wrapper">
+
+    <!-- USER PROFILE CARD -->
+    <div class="card">
+        <h2>Welcome, <span id="userName">Loading...</span></h2>
+        <p><strong>Wallet Balance:</strong> <span id="walletBalance">0</span> XAF</p>
+    </div>
+
+     
+    <div class="card">
+  <h3>Deposit to Wallet</h3>
+
+  <input
+    id="depositAmount"
+    type="number"
+    placeholder="Enter amount to deposit"
+  />
+
+  <p id="depositMsg" style="margin-top:10px;"></p>
+</div>
+<button onclick="depositWithCard()">Deposit with Card</button>
+
+
+<button onclick="depositWithPaystack()">Deposit with Card</button>
+<button onclick="depositWithMoMo()">Deposit with MoMo</button>
+
+<script>
+const token = localStorage.getItem("token");
+
+async function depositWithPaystack() {
+  const amount = document.getElementById("depositAmount").value;
+
+  if (!amount || amount <= 0) {
+    alert("Enter a valid amount");
+    return;
+  }
+
+  const res = await fetch("/api/paystack/initialize", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ amount })
+  });
+
+  const data = await res.json();
+
+  if (data.authorization_url) {
+    window.location.href = data.authorization_url;
+  } else {
+    alert("Paystack error");
+    console.log(data);
+  }
+}
+
+async function depositWithMoMo() {
+  const amount = document.getElementById("depositAmount").value;
+
+  const res = await fetch("/api/momo/deposit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ amount })
+  });
+
+  const data = await res.json();
+  alert(data.message || "MoMo request sent");
+}
+</script>
+
+
+
+    <!-- QUICK ACTION BUTTONS -->
+    <div class="card">
+        <button onclick="window.location.href='deposit.html'" class="main-btn">Deposit Money</button>
+        <button onclick="window.location.href='withdraw.html'" class="main-btn">Withdraw Money</button>
+        <button onclick="window.location.href='invest.html'" class="main-btn">Invest Now</button>
+    </div>
+
+    <!-- TRANSACTIONS LIST -->
+    <div class="card">
+        <h3>Your Recent Transactions</h3>
+        <div id="recentTransactions">Loading transactions...</div>
+    </div>
+
+       <div class="card">
+  <h3>Referral Program</h3>
+  <p>Your referral code: <strong id="referralCode">...</strong></p>
+  <p>Referral bonus balance: <strong id="referralBonus">0</strong> XAF</p>
+</div>
+
+
+</div>
+
+<script src="js/authFetch.js"></script>
+<script src="js/investor-dashboard.js"></script>
+
+</body>
+</html>

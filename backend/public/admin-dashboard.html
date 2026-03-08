@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Iyome Admin Dashboard</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+}
+
+header{
+background:#1e3a8a;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+button{
+padding:10px 15px;
+margin:5px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#2563eb;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Iyome Invest Admin Panel</h2>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Management</h3>
+
+<button onclick="go('admin-deposits.html')">Deposits</button>
+<button onclick="go('admin-withdrawals.html')">Withdrawals</button>
+<button onclick="go('admin-users.html')">Users</button>
+<button onclick="go('admin-plans.html')">Plans</button>
+
+</div>
+
+</div>
+
+<script>
+
+function go(page){
+window.location.href = "/" + page;
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { margin: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 8px; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+<h2>👑 Admin Dashboard</h2>
+
+<button onclick="loadUsers()">Users</button>
+<button onclick="loadWallets()">Wallets</button>
+<button onclick="loadInvestments()">Investments</button>
+<button onclick="loadWithdrawals()">Withdrawals</button>
+
+<table>
+  <thead id="thead"></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script src="admin.js"></script>
+</body>
+</html>

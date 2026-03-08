@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pay with PayUnit</title>
+</head>
+<body>
+
+<h3>Complete Payment</h3>
+
+<button onclick="payNow()">Pay with PayUnit</button>
+
+<script>
+async function payNow() {
+  const res = await fetch("/api/payunit/initialize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount: 1000,
+      userId: "USER_123",
+      description: "Purchase on IyomeAfrica"
+    })
+  });
+
+  const data = await res.json();
+  if (data.payment_url) {
+    window.location.href = data.payment_url;
+  }
+}
+</script>
+
+</body>
+</html>

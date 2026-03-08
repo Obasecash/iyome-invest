@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Investments – Iyome Invest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+ <h2>My Investments</h2>
+<div id="list"></div>
+
+
+
+<body>
+  <div class="nav-bar">
+    <div class="nav-links">
+      <a href="investor-dashboard.html">Dashboard</a>
+      <a href="investments.html" class="active">My Investments</a>
+      <a href="deposit.html">Deposit</a>
+      <a href="withdraw.html">Withdraw</a>
+      <a href="invest.html">Invest</a>
+      <a href="index.html">Logout</a>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+
+    <div class="card">
+      <h2>Your Investment Portfolio</h2>
+      <p><strong>Total Invested:</strong> <span id="totalInvested">0</span> XAF</p>
+      <p><strong>Total Profit Earned:</strong> <span id="totalProfit">0</span> XAF</p>
+    </div>
+
+    <div class="card">
+      <h3>Your Investments</h3>
+      <div id="investmentsList">Loading...</div>
+    </div>
+
+  </div>
+
+  <script src="js/authFetch.js"></script>
+  <script src="investments.js"></script>
+</body>
+</html>

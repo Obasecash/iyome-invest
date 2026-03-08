@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iyome Admin – Analytics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="nav-brand">Iyome Admin</div>
+  <div class="nav-links">
+    <a href="admin-dashboard.html">Overview</a>
+    <a href="admin-deposits.html">Deposits</a>
+    <a href="admin-withdrawals.html">Withdrawals</a>
+    <a href="admin-transactions.html">Transactions</a>
+    <a href="admin-analytics.html" class="active">Analytics</a>
+    <a href="index.html">Logout</a>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <div class="admin-container">
+    <h2 class="page-title">Platform Analytics</h2>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="statUsers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Invested</div>
+        <div class="stat-value" id="statInvested">$0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Deposits</div>
+        <div class="stat-value" id="statDeposits">$0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Withdrawals</div>
+        <div class="stat-value" id="statWithdrawals">$0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Profits</div>
+        <div class="stat-value" id="statProfits">$0</div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Transaction Mix</h3>
+
+    <div class="chart-row" id="txMixChart">
+      <!-- bars added by JS -->
+    </div>
+  </div>
+</div>
+
+<script src="js/admin-analytics.js"></script>
+<script src="js/adminAuthFetch.js"></script>
+</body>
+</html>

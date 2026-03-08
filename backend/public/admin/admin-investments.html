@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Investments</title>
+  <link rel="stylesheet" href="css/admin-dashboard.css" />
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>Iyome Admin</h2>
+    <nav>
+      <a href="admin-dashboard.html">Dashboard</a>
+      <a href="admin-user.html">Users</a>
+      <a href="admin-investments.html" class="active">Investments</a>
+      <a href="admin-transactions.html">Transactions</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+    <h1>Investments</h1>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Plan</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Return</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="investmentsTable">
+        <tr>
+          <td colspan="7">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+
+<script src="js/admin-investments.js"></script>
+</body>
+</html>

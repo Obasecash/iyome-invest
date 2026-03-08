@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Investor Detail | Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="page-wrapper">
+    <div class="admin-container">
+      <h2>Investor Detail</h2>
+
+      <p><strong>Name:</strong> <span id="detailName">-</span></p>
+      <p><strong>Email:</strong> <span id="detailEmail">-</span></p>
+      <p><strong>Wallet Balance:</strong> <span id="detailWallet">0 XAF</span></p>
+      <p><strong>Status:</strong> <span id="detailStatus">-</span></p>
+
+      <button id="toggleStatusBtn" class="secondary-btn">Suspend / Unsuspend</button>
+
+      <hr />
+
+      <h3>Wallet Controls</h3>
+      <input type="number" id="walletAmount" placeholder="Amount" />
+      <input type="text" id="walletNote" placeholder="Description / note" />
+
+      <div style="margin-top:10px;">
+        <button id="creditBtn" class="main-btn">Credit Wallet</button>
+        <button id="debitBtn" class="secondary-btn">Debit Wallet</button>
+      </div>
+
+      <p style="margin-top:15px;">
+        <a href="/admin-user.html">⬅ Back to users</a>
+      </p>
+    </div>
+  </div>
+
+<script>
+const token = localStorage.getItem("adminToken");
+if (!token) window.location.href = "admin-login.html";
+
+fetch("/api/admin/users", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(users => {
+  const table = document.getElementById("usersTable");
+  table.innerHTML = "";
+
+  users.forEach(u => {
+    table.innerHTML += `
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.walletBalance}</td>
+        <td>${u.isActive ? "Active" : "Blocked"}</td>
+        <td>
+          <button onclick="toggle('${u._id}')">Toggle</button>
+        </td>
+      </tr>
+    `;
+  });
+});
+
+function toggle(id) {
+  fetch("/api/admin/users/" + id + "/status", {
+    method: "PATCH",
+    headers: { Authorization: "Bearer " + token }
+  }).then(() => location.reload());
+}
+</script>
+
+
+  <script src="js/adminAuthFetch.js"></script>
+  <script src="js/admin-user-detail.js"></script>
+</body>
+</html>

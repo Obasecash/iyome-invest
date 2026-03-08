@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 30px;
+    }
+    .card {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.1);
+      text-align: center;
+    }
+    .balance {
+      font-size: 32px;
+      color: #0a8f4d;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 16px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Wallet Balance</h2>
+  <div class="balance" id="balance">$0.00</div>
+  <button onclick="loadProfile()">Refresh</button>
+
+  <div style="margin-top:20px;">
+  <input type="number" id="depositAmount" placeholder="Enter amount" />
+
+  <button onclick="createDeposit()" class="btn btn-success">
+    Deposit
+  </button>
+</div>
+
+  
+<a href="/withdraw-history.html">Withdrawal History</a>
+
+
+</div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Users</title>
+</head>
+
+<body>
+
+<h2>Users</h2>
+
+<table border="1">
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody id="users"></tbody>
+</table>
+
+<script>
+
+const token = localStorage.getItem("adminToken");
+
+async function load(){
+
+const res = await fetch("/api/admin/users",{
+headers:{ Authorization:"Bearer "+token }
+});
+
+const data = await res.json();
+
+const box=document.getElementById("users");
+box.innerHTML="";
+
+data.forEach(u=>{
+
+box.innerHTML+=`
+<tr>
+<td>${u.name}</td>
+<td>${u.email}</td>
+<td>${u.wallet?.balance || 0}</td>
+</tr>
+`;
+
+});
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>

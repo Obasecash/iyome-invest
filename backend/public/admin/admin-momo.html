@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - MoMo Deposits</title>
+  <style>
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
+    table { width:100%; background:#fff; border-collapse:collapse; }
+    th, td { padding:10px; border:1px solid #ddd; }
+    th { background:#222; color:#fff; }
+    button { padding:6px 12px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<h2>Pending MTN MoMo Deposits</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Phone</th>
+      <th>Amount</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="list"></tbody>
+</table>
+
+<script>
+const token = localStorage.getItem("adminToken");
+
+async function loadDeposits() {
+  const res = await fetch("/api/admin/momo/pending", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(tx => {
+    list.innerHTML += `
+      <tr>
+        <td>${tx.user?.email || "N/A"}</td>
+        <td>${tx.phone}</td>
+        <td>${tx.amount} XAF</td>
+        <td>
+          <button onclick="confirmDeposit('${tx._id}')">Confirm</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function confirmDeposit(id) {
+  if (!confirm("Confirm this MoMo deposit?")) return;
+
+  const res = await fetch("/api/admin/momo/confirm", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ transactionId: id })
+  });
+
+  const data = await res.json();
+  alert(data.message);
+  loadDeposits();
+}
+
+loadDeposits();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Plans</title>
+</head>
+
+<body>
+
+<h2>Create Investment Plan</h2>
+
+<input id="name" placeholder="Plan Name"><br><br>
+<input id="price" placeholder="Amount"><br><br>
+<input id="profit" placeholder="Profit %"><br><br>
+
+<button onclick="create()">Create</button>
+
+<script>
+
+const token = localStorage.getItem("adminToken");
+
+async function create(){
+
+const res = await fetch("/api/admin/plans",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:"Bearer "+token
+},
+body:JSON.stringify({
+name: name.value,
+price: price.value,
+profit: profit.value
+})
+});
+
+alert("Plan Created");
+
+}
+
+</script>
+
+</body>
+</html>
