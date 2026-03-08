@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iyome Blockchain Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🔗 Iyome Blockchain Explorer</h1>
+  <p>Track verified Iyome Invest transactions across the global ledger</p>
+
+  <input id="searchBox" type="text" placeholder="Search Reference ID (e.g. INV-001)" />
+  <button onclick="searchTx()">Search</button>
+
+  <table id="txTable">
+    <thead>
+      <tr>
+        <th>Investor ID</th>
+        <th>Reference</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Block Hash</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API = location.origin + "/api";
+
+    async function loadTx() {
+      const res = await fetch(API + "/transactions");
+      const data = await res.json();
+      render(data);
+    }
+
+    async function searchTx() {
+      const ref = document.getElementById("searchBox").value.trim();
+      if (!ref) return loadTx();
+      const res = await fetch(API + "/transactions/" + ref);
+      const tx = await res.json();
+      render(tx ? [tx] : []);
+    }
+
+    function render(list) {
+      const tbody = document.querySelector("#txTable tbody");
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#FFD700;">No results</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list
+        .map(
+          (t) => `
+        <tr>
+          <td>${t.investorId}</td>
+          <td>${t.externalId}</td>
+          <td>${t.type}</td>
+          <td>${t.amount} ${t.currency}</td>
+          <td style="color:${
+            t.status === "SUCCESSFUL"
+              ? "lime"
+              : t.status === "FAILED"
+              ? "red"
+              : "#FFD700"
+          }">${t.status}</td>
+          <td>${t.blockHash || "—"}</td>
+          <td>${new Date(t.createdAt).toLocaleString()}</td>
+        </tr>`
+        )
+        .join("");
+    }
+
+    loadTx();
+    setInterval(loadTx, 8000);
+  </script>
+</body>
+</html>
